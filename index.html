@@ -9,9 +9,11 @@
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <style>
-        #map {
-            width: 961px;
-            height: 856px;
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
         }
         </style>
         <title></title>
@@ -29,34 +31,31 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/powerstations_2.js"></script>
+        <script src="data/infrastructureTRAMinfrastructure_1.js"></script>
+        <script src="data/TRLinfrastructurepowerline_air_2.js"></script>
+        <script src="data/powerstations_3.js"></script>
         <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[50.227905176264535,28.60319899806225],[50.303757759204515,28.735410783296263]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
-        map.createPane('pane_OSMTransportation_0');
-        map.getPane('pane_OSMTransportation_0').style.zIndex = 400;
-        var layer_OSMTransportation_0 = L.tileLayer('http://tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
-            pane: 'pane_OSMTransportation_0',
-            opacity: 1.0,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">Maps © Thunderforest, Data © OpenStreetMap contributors</a>',
-            minZoom: 1,
-            maxZoom: 28,
-            minNativeZoom: 0,
-            maxNativeZoom: 19
-        });
-        layer_OSMTransportation_0;
-        map.addLayer(layer_OSMTransportation_0);
-        map.createPane('pane_OSMStandard_1');
-        map.getPane('pane_OSMStandard_1').style.zIndex = 401;
-        var layer_OSMStandard_1 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            pane: 'pane_OSMStandard_1',
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
             opacity: 0.6,
             attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
             minZoom: 1,
@@ -64,26 +63,156 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        layer_OSMStandard_1;
-        map.addLayer(layer_OSMStandard_1);
-        function pop_powerstations_2(feature, layer) {
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_infrastructureTRAMinfrastructure_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['no'] !== null ? autolinker.link(feature.properties['no'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">LINENAME</th>\
+                        <td>' + (feature.properties['LINENAME'] !== null ? autolinker.link(feature.properties['LINENAME'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['adress_full'] !== null ? autolinker.link(feature.properties['adress_full'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['pth_plan'] !== null ? autolinker.link(feature.properties['pth_plan'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">line_TSYSCODE</th>\
+                        <td>' + (feature.properties['line_TSYSCODE'] !== null ? autolinker.link(feature.properties['line_TSYSCODE'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_powerstations_2_0() {
+        function style_infrastructureTRAMinfrastructure_1_0() {
             return {
-                pane: 'pane_powerstations_2',
+                pane: 'pane_infrastructureTRAMinfrastructure_1',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_infrastructureTRAMinfrastructure_1_1() {
+            return {
+                pane: 'pane_infrastructureTRAMinfrastructure_1',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_infrastructureTRAMinfrastructure_1');
+        map.getPane('pane_infrastructureTRAMinfrastructure_1').style.zIndex = 401;
+        map.getPane('pane_infrastructureTRAMinfrastructure_1').style['mix-blend-mode'] = 'normal';
+        var layer_infrastructureTRAMinfrastructure_1 = new L.geoJson.multiStyle(json_infrastructureTRAMinfrastructure_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_infrastructureTRAMinfrastructure_1',
+            layerName: 'layer_infrastructureTRAMinfrastructure_1',
+            pane: 'pane_infrastructureTRAMinfrastructure_1',
+            onEachFeature: pop_infrastructureTRAMinfrastructure_1,
+            styles: [style_infrastructureTRAMinfrastructure_1_0,style_infrastructureTRAMinfrastructure_1_1,]
+        });
+        bounds_group.addLayer(layer_infrastructureTRAMinfrastructure_1);
+        map.addLayer(layer_infrastructureTRAMinfrastructure_1);
+        function pop_TRLinfrastructurepowerline_air_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NO</th>\
+                        <td>' + (feature.properties['NO'] !== null ? autolinker.link(feature.properties['NO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NAME</th>\
+                        <td>' + (feature.properties['NAME'] !== null ? autolinker.link(feature.properties['NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_TRLinfrastructurepowerline_air_2_0() {
+            return {
+                pane: 'pane_TRLinfrastructurepowerline_air_2',
+                opacity: 1,
+                color: 'rgba(84,176,74,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_TRLinfrastructurepowerline_air_2');
+        map.getPane('pane_TRLinfrastructurepowerline_air_2').style.zIndex = 402;
+        map.getPane('pane_TRLinfrastructurepowerline_air_2').style['mix-blend-mode'] = 'normal';
+        var layer_TRLinfrastructurepowerline_air_2 = new L.geoJson(json_TRLinfrastructurepowerline_air_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_TRLinfrastructurepowerline_air_2',
+            layerName: 'layer_TRLinfrastructurepowerline_air_2',
+            pane: 'pane_TRLinfrastructurepowerline_air_2',
+            onEachFeature: pop_TRLinfrastructurepowerline_air_2,
+            style: style_TRLinfrastructurepowerline_air_2_0,
+        });
+        bounds_group.addLayer(layer_TRLinfrastructurepowerline_air_2);
+        map.addLayer(layer_TRLinfrastructurepowerline_air_2);
+        function pop_powerstations_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">city</th>\
+                        <td>' + (feature.properties['city'] !== null ? autolinker.link(feature.properties['city'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">adress</th>\
+                        <td>' + (feature.properties['adress'] !== null ? autolinker.link(feature.properties['adress'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td>' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_powerstations_3_0() {
+            return {
+                pane: 'pane_powerstations_3',
                 radius: 14.4,
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
@@ -97,38 +226,40 @@
                 interactive: true,
             }
         }
-        function style_powerstations_2_1() {
+        function style_powerstations_3_1() {
             return {
-                pane: 'pane_powerstations_2',
+                pane: 'pane_powerstations_3',
                 interactive: true,
             }
         }
-        map.createPane('pane_powerstations_2');
-        map.getPane('pane_powerstations_2').style.zIndex = 402;
-        map.getPane('pane_powerstations_2').style['mix-blend-mode'] = 'normal';
-        var layer_powerstations_2 = new L.geoJson.multiStyle(json_powerstations_2, {
+        map.createPane('pane_powerstations_3');
+        map.getPane('pane_powerstations_3').style.zIndex = 403;
+        map.getPane('pane_powerstations_3').style['mix-blend-mode'] = 'normal';
+        var layer_powerstations_3 = new L.geoJson.multiStyle(json_powerstations_3, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_powerstations_2',
-            layerName: 'layer_powerstations_2',
-            pane: 'pane_powerstations_2',
-            onEachFeature: pop_powerstations_2,
+            dataVar: 'json_powerstations_3',
+            layerName: 'layer_powerstations_3',
+            pane: 'pane_powerstations_3',
+            onEachFeature: pop_powerstations_3,
             pointToLayers: [function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_powerstations_2_0(feature));
+                return L.circleMarker(latlng, style_powerstations_3_0(feature));
             },function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_powerstations_2_1(feature));
+                return L.circleMarker(latlng, style_powerstations_3_1(feature));
             },
         ]});
-        bounds_group.addLayer(layer_powerstations_2);
-        map.addLayer(layer_powerstations_2);
+        bounds_group.addLayer(layer_powerstations_3);
+        map.addLayer(layer_powerstations_3);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/powerstations_3.png" /> powerstations': layer_powerstations_3,'<img src="legend/TRLinfrastructurepowerline_air_2.png" /> TRL infrastructure powerline_air': layer_TRLinfrastructurepowerline_air_2,'<img src="legend/infrastructureTRAMinfrastructure_1.png" /> infrastructure TRAM infrastructure': layer_infrastructureTRAMinfrastructure_1,"OSM Standard": layer_OSMStandard_0,},{collapsed:false}).addTo(map);
         setBounds();
         </script>
     </body>
